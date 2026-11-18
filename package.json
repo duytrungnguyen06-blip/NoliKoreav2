@@ -1,0 +1,14 @@
+{
+  "name": "nolikorea",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "build": "node scripts/build-content.cjs && node scripts/build-css.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.5.3"
+  },
+  "version": "6.0.0"
+}

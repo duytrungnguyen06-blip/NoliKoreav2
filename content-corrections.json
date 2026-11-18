@@ -1,0 +1,34 @@
+[
+  {
+    "sid": "s1",
+    "bid": "b1a",
+    "lid": "b1a_l3",
+    "korean": "읽다",
+    "old": "Đọc (phát âm [익따], chia đuôi [일거요])",
+    "new": "Đọc (읽다 [익따]; dạng lịch sự: 읽어요 [일거요])"
+  },
+  {
+    "sid": "s1",
+    "bid": "b1a",
+    "lid": "b1a_l6",
+    "korean": "불고기",
+    "old": "Thịt bò xào tẩm sốt đậm đà (Bulgogi)",
+    "new": "Thịt bò ướp gia vị, nướng hoặc áp chảo (Bulgogi)"
+  },
+  {
+    "sid": "s1",
+    "bid": "b1a",
+    "lid": "b1a_l7",
+    "korean": "사계절",
+    "old": "Bốn mùa, tứ quý (봄, 여름, 가을, 겨울)",
+    "new": "Bốn mùa (봄, 여름, 가을, 겨울)"
+  },
+  {
+    "sid": "s1",
+    "bid": "b1a",
+    "lid": "b1a_l8",
+    "korean": "테니스",
+    "old": "Môn quần vợt, khúc côn cầu lưới (tennis)",
+    "new": "Môn quần vợt (tennis)"
+  }
+]

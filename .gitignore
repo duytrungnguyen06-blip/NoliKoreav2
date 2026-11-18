@@ -1,0 +1,7 @@
+node_modules/
+*.tar.gz
+*.zip
+pages/
+
+Day_Len_GitHub.bat
+day_len_github.sh
