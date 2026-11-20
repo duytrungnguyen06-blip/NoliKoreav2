@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'dist/**'
+      - 'NoliKorea_V7_Part1.zip'
+      - 'NoliKorea_V7_Part2.zip'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -23,16 +25,31 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Ensure static entry point exists
-        run: test -f dist/index.html
-      - name: Configure Pages
+
+      - name: Extract both V7 archive parts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f NoliKorea_V7_Part1.zip
+          test -f NoliKorea_V7_Part2.zip
+          mkdir -p unpacked site
+          unzip -oq NoliKorea_V7_Part1.zip -d unpacked
+          unzip -oq NoliKorea_V7_Part2.zip -d unpacked
+          test -f unpacked/v7/dist/index.html
+          cp -a unpacked/v7/dist/. site/
+          touch site/.nojekyll
+          echo "Site files: $(find site -type f | wc -l)"
+
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-      - name: Upload static website
+
+      - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
-      - name: Publish
+          path: site
+
+      - name: Publish website
         id: deployment
         uses: actions/deploy-pages@v4
