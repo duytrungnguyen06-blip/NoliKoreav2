@@ -1,0 +1,55 @@
+name: Deploy NoliKorea V7 to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'NoliKorea_V7_*.zip'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ hashFiles('NoliKorea_V7_Core.zip') != '' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Unpack V7 website and audio
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          for archive in NoliKorea_V7_Core.zip NoliKorea_V7_Audio_1.zip NoliKorea_V7_Audio_2.zip NoliKorea_V7_Audio_3.zip; do
+            test -s "$archive" || { echo "::error::Missing $archive"; exit 1; }
+            unzip -q -o "$archive" -d site
+          done
+          test -f site/index.html
+          test -f site/audio/snu1a/track_89.mp3
+          touch site/.nojekyll
+          echo "Site contains $(find site -type f | wc -l) files"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
