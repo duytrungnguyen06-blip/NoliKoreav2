@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'NoliKorea_V7_*.zip'
+      - 'dist/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -19,37 +19,22 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ hashFiles('NoliKorea_V7_Core.zip') != '' }}
+    if: ${{ hashFiles('dist/index.html') != '' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out repository
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Unpack V7 website and audio
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p site
-          for archive in NoliKorea_V7_Core.zip NoliKorea_V7_Audio_1.zip NoliKorea_V7_Audio_2.zip NoliKorea_V7_Audio_3.zip; do
-            test -s "$archive" || { echo "::error::Missing $archive"; exit 1; }
-            unzip -q -o "$archive" -d site
-          done
-          test -f site/index.html
-          test -f site/audio/snu1a/track_89.mp3
-          touch site/.nojekyll
-          echo "Site contains $(find site -type f | wc -l) files"
-
+      - name: Ensure static entry point exists
+        run: test -f dist/index.html
       - name: Configure Pages
         uses: actions/configure-pages@v5
-
-      - name: Upload site
+      - name: Upload static website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
-
-      - name: Deploy Pages
+          path: dist
+      - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
