@@ -1,4 +1,4 @@
-name: Deploy NoliKorea V7 to GitHub Pages
+name: Deploy NoliKorea to GitHub Pages
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - 'NoliKorea_V7_Part1.zip'
       - 'NoliKorea_V7_Part2.zip'
       - 'NoliKorea_V7_Update.zip'
+      - 'NoliKorea_V8_Update.zip'
   workflow_dispatch:
 
 permissions:
@@ -35,12 +36,18 @@ jobs:
           mkdir -p unpacked site
           unzip -oq NoliKorea_V7_Part1.zip -d unpacked
           unzip -oq NoliKorea_V7_Part2.zip -d unpacked
-          if [ -f NoliKorea_V7_Update.zip ]; then
-            unzip -oq NoliKorea_V7_Update.zip -d update
+          if [ -f NoliKorea_V8_Update.zip ]; then
+            unzip -oq NoliKorea_V8_Update.zip -d update
             test -f update/v7/dist/index.html
-            cp -a update/v7/dist/. site/
             test -d unpacked/v7/dist/audio
             cp -a unpacked/v7/dist/audio site/
+            cp -a update/v7/dist/. site/
+            test -f site/audio/tts-1a-map.js
+          elif [ -f NoliKorea_V7_Update.zip ]; then
+            unzip -oq NoliKorea_V7_Update.zip -d update
+            test -f update/v7/dist/index.html
+            cp -a unpacked/v7/dist/audio site/
+            cp -a update/v7/dist/. site/
           else
             cp -a unpacked/v7/dist/. site/
           fi
