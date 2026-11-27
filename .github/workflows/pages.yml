@@ -9,6 +9,8 @@ on:
       - 'NoliKorea_V7_Update.zip'
       - 'NoliKorea_V8_Update.zip'
       - 'NoliKorea_V8_Update_02.zip'
+      - 'NoliKorea_V8_Update_03_Part1.zip'
+      - 'NoliKorea_V8_Update_03_Part2.zip'
   workflow_dispatch:
 
 permissions:
@@ -37,7 +39,18 @@ jobs:
           mkdir -p unpacked site
           unzip -oq NoliKorea_V7_Part1.zip -d unpacked
           unzip -oq NoliKorea_V7_Part2.zip -d unpacked
-          if [ -f NoliKorea_V8_Update_02.zip ]; then
+          if [ -f NoliKorea_V8_Update_03_Part1.zip ] || [ -f NoliKorea_V8_Update_03_Part2.zip ]; then
+            test -f NoliKorea_V8_Update_03_Part1.zip
+            test -f NoliKorea_V8_Update_03_Part2.zip
+            unzip -oq NoliKorea_V8_Update_03_Part1.zip -d update
+            unzip -oq NoliKorea_V8_Update_03_Part2.zip -d update
+            test -f update/v7/dist/index.html
+            mkdir -p site/audio
+            cp -a unpacked/v7/dist/audio/snu1a site/audio/
+            cp -a update/v7/dist/. site/
+            (cd site && sha256sum --quiet -c ../update/site-sha256.txt)
+            test "$(find site -type f | wc -l)" -eq 2431
+          elif [ -f NoliKorea_V8_Update_02.zip ]; then
             unzip -oq NoliKorea_V8_Update_02.zip -d update
             test -f update/v7/dist/index.html
             test -d unpacked/v7/dist/audio
