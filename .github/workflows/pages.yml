@@ -11,6 +11,9 @@ on:
       - 'NoliKorea_V8_Update_02.zip'
       - 'NoliKorea_V8_Update_03_Part1.zip'
       - 'NoliKorea_V8_Update_03_Part2.zip'
+      - 'NoliKorea_V8_Update_04_Part1.zip'
+      - 'NoliKorea_V8_Update_04_Part2.zip'
+      - 'NoliKorea_V8_Update_04_Part3.zip'
   workflow_dispatch:
 
 permissions:
@@ -39,7 +42,23 @@ jobs:
           mkdir -p unpacked site
           unzip -oq NoliKorea_V7_Part1.zip -d unpacked
           unzip -oq NoliKorea_V7_Part2.zip -d unpacked
-          if [ -f NoliKorea_V8_Update_03_Part1.zip ] || [ -f NoliKorea_V8_Update_03_Part2.zip ]; then
+          if [ -f NoliKorea_V8_Update_04_Part1.zip ] || [ -f NoliKorea_V8_Update_04_Part2.zip ] || [ -f NoliKorea_V8_Update_04_Part3.zip ]; then
+            mkdir -p shared update site/audio
+            for part in 1 2; do
+              unzip -oq "NoliKorea_V8_Update_03_Part${part}.zip" -d shared
+            done
+            for part in 1 2 3; do
+              test -f "NoliKorea_V8_Update_04_Part${part}.zip"
+              unzip -oq "NoliKorea_V8_Update_04_Part${part}.zip" -d update
+            done
+            cp -a unpacked/v7/dist/audio/snu1a site/audio/
+            cp -a shared/v7/dist/audio/tts_1a shared/v7/dist/audio/tts_1a_male site/audio/
+            cp -a update/v7/dist/. site/
+            test -f site/workbook.js
+            test -d site/audio/snu1a_wb
+            (cd site && sha256sum --quiet -c ../update/site-sha256.txt)
+            test "$(find site -type f | wc -l)" -eq 2485
+          elif [ -f NoliKorea_V8_Update_03_Part1.zip ] || [ -f NoliKorea_V8_Update_03_Part2.zip ]; then
             test -f NoliKorea_V8_Update_03_Part1.zip
             test -f NoliKorea_V8_Update_03_Part2.zip
             unzip -oq NoliKorea_V8_Update_03_Part1.zip -d update
