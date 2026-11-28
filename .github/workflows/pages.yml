@@ -14,6 +14,7 @@ on:
       - 'NoliKorea_V8_Update_04_Part1.zip'
       - 'NoliKorea_V8_Update_04_Part2.zip'
       - 'NoliKorea_V8_Update_04_Part3.zip'
+      - 'NoliKorea_V8_Update_05.zip'
   workflow_dispatch:
 
 permissions:
@@ -90,6 +91,13 @@ jobs:
             cp -a update/v7/dist/. site/
           else
             cp -a unpacked/v7/dist/. site/
+          fi
+          if [ -f NoliKorea_V8_Update_05.zip ]; then
+            mkdir -p patch05
+            unzip -oq NoliKorea_V8_Update_05.zip -d patch05
+            cp -a patch05/v7/dist/. site/
+            (cd site && sha256sum --quiet -c ../patch05/site-sha256.txt)
+            test "$(find site -type f | wc -l)" -eq 2485
           fi
           test -f site/index.html
           touch site/.nojekyll
